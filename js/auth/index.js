@@ -1,16 +1,24 @@
+/* Authorize and Set Up IoT Connection */
+
 MOVE.auth.handlers = {}
 MOVE.auth.handlers.connect = () => {
   MOVE.auth.client.subscribe(MOVE.auth.topic)
 }
 MOVE.auth.handlers.message = (topic, message) => {
-  //FIXME: Testing
-  console.log(message);
+  const data = JSON.parse(String.fromCharCode.apply(null, message).trim())
+  MOVE.handle(data)
 }
+
 MOVE.auth.connect = (topic) => {
+  if (!topic) {
+    topic = MOVE.MAINLINE
+  }
   MOVE.auth.topic = topic
   fetch(MOVE.API_PATH + "/index/auth").then(r => r.json()).then((keys) => {
     if (keys) {
-      console.log(keys)
+      let a = keys.iotEndpoint.split(".")
+      a[0] = (a[0] + "-ats")
+      keys.iotEndpoint = a.join(".")
       MOVE.auth.client = MOVE.auth.AWS_IOT.device({
         region: keys.region,
         protocol: "wss",

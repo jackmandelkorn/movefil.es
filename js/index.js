@@ -1,2 +1,3 @@
-/* FIXME: Testing */
-//console.log("Live.")
+/* Onload  Script */
+
+MOVE.auth.connect();
