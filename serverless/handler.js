@@ -68,51 +68,44 @@ module.exports.post = (event, context, callback) => {
     })
     const params = JSON.parse(event.body)
     let url = false
-    let ignore = false
+    let signature = false
     if (params) {
       const putParams = {
         Bucket: BUCKET_NAME,
-        Key:  params.name,
+        Key: (signature + "/" + params.name),
         ContentType: params.type,
         ACL: "public-read"
       }
-      if (params.name && params.type) {
-        ignore = getRandomID().toString()
-        let iotPayload = {
-          filename: params.name,
-          type: params.type,
-          signature: ignore
-        }
-        let iotParams = {
-          topic: TOPIC,
-          payload: JSON.stringify(iotPayload),
-          qos: 0
-        }
-        iotdata.publish(iotParams, (err, data) => {
-          if (err) {
-            return callback(err)
-          }
-          else {
-            url = s3.getSignedUrl("putObject", putParams)
-            callback(null, {
-              statusCode: 200,
-              headers: {
-                "Access-Control-Allow-Origin": HOME,
-              },
-              body: JSON.stringify({url,ignore})
-            })
-          }
-        })
+      signature = getRandomID().toString()
+      let iotPayload = {
+        filename: params.name,
+        type: params.type,
+        signature: signature
       }
+      let iotParams = {
+        topic: TOPIC,
+        payload: JSON.stringify(iotPayload),
+        qos: 0
+      }
+      iotdata.publish(iotParams, (err, data) => {
+        if (err) {
+          return callback(err)
+        }
+        else {
+          url = s3.getSignedUrl("putObject", putParams)
+          callback(null, {
+            statusCode: 200,
+            headers: {
+              "Access-Control-Allow-Origin": HOME,
+            },
+            body: JSON.stringify({url,signature})
+          })
+        }
+      })
     }
     else {
-      callback(null, {
-        statusCode: 200,
-        headers: {
-          "Access-Control-Allow-Origin": HOME,
-        },
-        body: JSON.stringify({url,ignore})
-      })
+      let err = {}
+      return callback(err)
     }
   })
 }

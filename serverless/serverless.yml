@@ -8,6 +8,7 @@ provider:
     - Effect: "Allow"
       Action:
         - 'iot:DescribeEndpoint'
+        - 'iot:Publish'
       Resource: "*"
     - Effect: "Allow"
       Action:
@@ -25,6 +26,7 @@ functions:
       - http:
           path: index/post
           method: any
+          cors: true
   auth:
     handler: handler.auth
     events:

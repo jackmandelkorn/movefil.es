@@ -39,7 +39,7 @@ MOVE.drop = (e) => {
       }).then(r => r.json()).then((json) => {
         let url = json.url
         if (url) {
-          MOVE.signatures.push(json.ignore)
+          MOVE.signatures.push(json.signature)
           return fetch(json.url, {
             method: "PUT",
             body: new Blob([reader.result], {
