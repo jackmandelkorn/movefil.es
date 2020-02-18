@@ -16,9 +16,6 @@ MOVE.auth.connect = (topic) => {
   MOVE.auth.topic = topic
   fetch(MOVE.API_PATH + "/index/auth").then(r => r.json()).then((keys) => {
     if (keys) {
-      let a = keys.iotEndpoint.split(".")
-      a[0] = (a[0] + "-ats")
-      keys.iotEndpoint = a.join(".")
       MOVE.auth.client = MOVE.auth.AWS_IOT.device({
         region: keys.region,
         protocol: "wss",
