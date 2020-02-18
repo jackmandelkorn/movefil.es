@@ -1,0 +1,32 @@
+service: move-files
+
+provider:
+  name: aws
+  stage: dev
+  runtime: nodejs10.x
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - 'iot:DescribeEndpoint'
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - 'sts:AssumeRole'
+      Resource: "*"
+
+functions:
+  post:
+    handler: handler.post
+    events:
+      - http:
+          path: index/post
+          method: any
+      - http:
+          path: index/post/{url}
+          method: any
+  auth:
+    handler: handler.auth
+    events:
+      - http:
+          path: index/auth
+          method: any
