@@ -11,7 +11,7 @@ const MOVE = {
   API_STAGE: INIT_ENV.stage.toUpperCase(),
   MAINLINE: INIT_ENV.mainline,
   ui: {
-    onCreate: (filename, type) => {},
+    onCreate: (filename, type, x, y) => {},
     onDelete: (signature) => {}
   }
 }

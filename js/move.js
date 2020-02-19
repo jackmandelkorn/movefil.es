@@ -11,7 +11,7 @@ MOVE.handle = (input) => {
     input.owned = false
     MOVE.files.push(input)
     MOVE.crosscheck()
-    MOVE.ui.onCreate(input.filename, input.type)
+    MOVE.ui.onCreate(input.filename, input.type, input.x, input.y)
   }
 }
 
@@ -93,9 +93,31 @@ MOVE.get = (input) => {
 }
 
 MOVE.drop = (e) => {
+  const ICON_SIZE = 64
   e.preventDefault()
   let dataTransfer = e.dataTransfer
-  MOVE.upload(dataTransfer.files)
+  const x = e.x
+  const y = e.y
+  const BUFFER = 0.5
+  const SPACING_X = (((ICON_SIZE * (1 + BUFFER)) / window.innerWidth) * 100).toFixed(DECIMALS)
+  const SPACING_Y = (((ICON_SIZE * (1 + BUFFER)) / window.innerHeight) * 100).toFixed(DECIMALS)
+  const DECIMALS = 3
+  const MAX_X = 100 - SPACING_X
+  const MAX_Y = 100 - SPACING_Y
+  let files = dataTransfer.files
+  let flip = false
+  if ((y + (Math.floor(((files.length - 1) * SPACING_X) / (MAX_X - x)) * SPACING_Y).toFixed(DECIMALS)) >= MAX_Y) {
+    flip = true
+  }
+  for (let i = 0; i < files.length; i++) {
+    files[i].x = (x + ((i * SPACING_X) % (MAX_X - x)).toFixed(DECIMALS))
+    let addY = (Math.floor((i * SPACING_X) / (MAX_X - x)) * SPACING_Y).toFixed(DECIMALS)
+    if (flip) {
+      addY *= (-1)
+    }
+    files[i].y = (y + addY)
+  }
+  MOVE.upload(files)
   return false
 }
 
@@ -115,7 +137,9 @@ MOVE.upload = (files) => {
         },
         body: JSON.stringify({
           filename: file.name,
-          type: file.type
+          type: file.type,
+          x: file.x,
+          y: file.y
         })
       }).then(r => r.json()).then((json) => {
         let url = json.url

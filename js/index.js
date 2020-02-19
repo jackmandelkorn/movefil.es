@@ -1,7 +1,7 @@
 /* Onload  Script */
 
 MOVE.ui = {
-  onCreate: (filename, type) => {
+  onCreate: (filename, type, x, y) => {
     //TODO: Implement
   },
   onDelete: (signature) => {

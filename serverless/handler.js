@@ -14,6 +14,11 @@ const getRandomID = () => {
   return Math.random().toString(36).substring(2)
 }
 
+const getRandomPos = () => {
+  const DECIMALS = 3
+  return ((Math.random() * Math.pow(10, (DECIMALS + 2))) / 100)
+}
+
 const atsEndpoint = (endpoint) => {
   let a = endpoint.split(".")
   a[0] = (a[0] + "-ats")
@@ -124,6 +129,8 @@ module.exports.post = (event, context, callback) => {
     let iotPayload = {
       filename: params.filename,
       type: params.type,
+      x: (params.x || getRandomPos()),
+      y: (params.y || getRandomPos()),
       signature: signature
     }
     atsPublish(iotPayload, (err) => {
