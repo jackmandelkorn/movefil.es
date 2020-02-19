@@ -112,8 +112,8 @@ MOVE.dropPositions = (files, e) => {
   const SPACING_Y = (((MOVE.ICON_SIZE * (1 + BUFFER)) / window.innerHeight) * 100).toFixed(DECIMALS)
   const MAX_X = 100 - SPACING_X
   const MAX_Y = ((100 - SPACING_Y) - ((MOVE.HEADER_SIZE / window.innerHeight) * 100)).toFixed(DECIMALS)
-  const x = Math.min(((Math.max((e.x - MOVE.ICON_SIZE) / 2, 0) / window.innerWidth) * 100).toFixed(DECIMALS), MAX_X)
-  const y = Math.min((((Math.max(Math.max((e.y - MOVE.ICON_SIZE) / 2, 0), MOVE.HEADER_SIZE) - MOVE.HEADER_SIZE) / window.innerHeight) * 100).toFixed(DECIMALS), MAX_Y)
+  const x = Math.min(((Math.max(e.x - (MOVE.ICON_SIZE / 2), 0) / window.innerWidth) * 100).toFixed(DECIMALS), MAX_X)
+  const y = Math.min((((Math.max(Math.max(e.y - (MOVE.ICON_SIZE / 2), 0), MOVE.HEADER_SIZE) - MOVE.HEADER_SIZE) / window.innerHeight) * 100).toFixed(DECIMALS), MAX_Y)
   for (let i = 0; i < files.length; i++) {
     files[i].x = x + (SPACING_X * i)
     files[i].y = y + (SPACING_Y * i)
