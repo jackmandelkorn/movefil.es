@@ -95,7 +95,7 @@ MOVE.get = (input) => {
 MOVE.drop = (e) => {
   e.preventDefault()
   let dataTransfer = e.dataTransfer
-  let files = dropPositions(dataTransfer.files, e)
+  let files = MOVE.dropPositions(dataTransfer.files, e)
   MOVE.upload(files)
   return false
 }
