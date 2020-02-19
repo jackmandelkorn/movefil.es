@@ -11,6 +11,7 @@ MOVE.handle = (input) => {
     input.owned = false
     MOVE.files.push(input)
     MOVE.crosscheck()
+    MOVE.ui.onCreate(input.filename, input.type)
   }
 }
 
@@ -19,6 +20,7 @@ MOVE.handleDelete = (input) => {
     for (let key in MOVE.files) {
       if (MOVE.files[key].filename === input.filename && MOVE.files[key].signature === input.signature) {
         MOVE.files.splice(key, 1)
+        MOVE.ui.onDelete(MOVE.files[key].signature)
       }
     }
     MOVE.crosscheck()
@@ -86,13 +88,23 @@ MOVE.get = (input) => {
     link.href = source
     link.download = filename
     link.click()
+    MOVE.crosscheck()
   })
 }
 
 MOVE.drop = (e) => {
   e.preventDefault()
   let dataTransfer = e.dataTransfer
-  let files = dataTransfer.files
+  MOVE.upload(dataTransfer.files)
+  return false
+}
+
+MOVE.dropCancel = (e) => {
+  e.preventDefault()
+  return false
+}
+
+MOVE.upload = (files) => {
   for (let file of files) {
     let reader = new FileReader()
     reader.addEventListener("loadend", (e) => {
@@ -123,12 +135,15 @@ MOVE.drop = (e) => {
     })
     reader.readAsArrayBuffer(file)
   }
-  return false
 }
 
-MOVE.dropCancel = (e) => {
-  e.preventDefault()
-  return false
+MOVE.ui = {
+  onCreate: (filename, type) => {
+    //TODO: Implement
+  },
+  onDelete: (signature) => {
+    //TODO: Implement
+  }
 }
 
 MOVE.auth.connect()
