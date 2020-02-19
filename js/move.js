@@ -137,13 +137,4 @@ MOVE.upload = (files) => {
   }
 }
 
-MOVE.ui = {
-  onCreate: (filename, type) => {
-    //TODO: Implement
-  },
-  onDelete: (signature) => {
-    //TODO: Implement
-  }
-}
-
 MOVE.auth.connect()

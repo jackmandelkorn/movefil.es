@@ -9,7 +9,11 @@ let INIT_ENV = {
 const MOVE = {
   API_PATH: ("https://" + INIT_ENV.path + "/" + INIT_ENV.stage),
   API_STAGE: INIT_ENV.stage.toUpperCase(),
-  MAINLINE: INIT_ENV.mainline
+  MAINLINE: INIT_ENV.mainline,
+  ui: {
+    onCreate: (filename, type) => {},
+    onDelete: (signature) => {}
+  }
 }
 
 for (let key in INIT_ENV) {
