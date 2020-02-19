@@ -4,9 +4,23 @@ MOVE.files = []
 MOVE.signatures = []
 
 MOVE.handle = (input) => {
-  if (input.filename && input.type && input.signature) {
+  if (input.delete) {
+    MOVE.handleDelete(input)
+  }
+  else if (input.filename && input.type && input.signature) {
     input.owned = false
     MOVE.files.push(input)
+    MOVE.crosscheck()
+  }
+}
+
+MOVE.handleDelete = (input) => {
+  if (input.filename && input.signature) {
+    for (let key in MOVE.files) {
+      if (MOVE.files[key].filename === input.filename && MOVE.files[key].signature === input.signature) {
+        MOVE.files.splice(key, 1)
+      }
+    }
     MOVE.crosscheck()
   }
 }
@@ -16,6 +30,25 @@ MOVE.crosscheck = () => {
     MOVE.files[key].owned = false
     if (MOVE.signatures.includes(MOVE.files[key].signature)) {
       MOVE.files[key].owned = true
+    }
+  }
+}
+
+MOVE.delete = (filename) => {
+  for (let key in MOVE.files) {
+    if (MOVE.files[key].filename === filename && MOVE.files[key].owned === true) {
+      fetch(MOVE.API_PATH + "/index/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          filename,
+          signature: MOVE.files[key].signature
+        })
+      }).then((res) => {
+        MOVE.crosscheck()
+      })
     }
   }
 }
@@ -33,7 +66,7 @@ MOVE.drop = (e) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          name: file.name,
+          filename: file.name,
           type: file.type
         })
       }).then(r => r.json()).then((json) => {

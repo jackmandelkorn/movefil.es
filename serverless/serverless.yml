@@ -27,6 +27,13 @@ functions:
           path: index/post
           method: any
           cors: true
+  delete:
+    handler: handler.delete
+    events:
+      - http:
+          path: index/delete
+          method: any
+          cors: true
   auth:
     handler: handler.auth
     events:

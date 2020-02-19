@@ -20,6 +20,46 @@ const atsEndpoint = (endpoint) => {
   return a.join(".")
 }
 
+const atsPublish = (body, callback) => {
+  iot.describeEndpoint({}, (err, data) => {
+    if (err) {
+      return callback(err)
+    }
+    const iotEndpoint = atsEndpoint(data.endpointAddress)
+    const iotdata = new AWS.IotData({
+      endpoint: iotEndpoint
+    })
+    let iotParams = {
+      topic: TOPIC,
+      payload: JSON.stringify(body),
+      qos: 0
+    }
+    iotdata.publish(iotParams, (err, data) => {
+      if (err) {
+        return callback(err)
+      }
+      else {
+        callback(null)
+      }
+    })
+  })
+}
+
+const s3Delete = (filename, signature, callback) => {
+  let params = {
+    Bucket: BUCKET_NAME,
+    Key: (signature + "/" + filename)
+  }
+  s3.deleteObject(params, (err, data) => {
+    if (err) {
+      return callback(err)
+    }
+    else {
+      callback(null)
+    }
+  })
+}
+
 module.exports.auth = (event, context, callback) => {
   iot.describeEndpoint({}, (err, data) => {
     if (err) {
@@ -58,54 +98,75 @@ module.exports.auth = (event, context, callback) => {
 }
 
 module.exports.post = (event, context, callback) => {
-  iot.describeEndpoint({}, (err, data) => {
-    if (err) {
-      return callback(err)
+  const params = JSON.parse(event.body)
+  let url = false
+  let signature = false
+  if (params) {
+    signature = getRandomID().toString()
+    const putParams = {
+      Bucket: BUCKET_NAME,
+      Key: (signature + "/" + params.filename),
+      ContentType: params.type,
+      ACL: "public-read"
     }
-    const iotEndpoint = atsEndpoint(data.endpointAddress)
-    const iotdata = new AWS.IotData({
-      endpoint: iotEndpoint
+    let iotPayload = {
+      filename: params.filename,
+      type: params.type,
+      signature: signature
+    }
+    atsPublish(iotPayload, (err) => {
+      if (err) {
+        return callback(err)
+      }
+      else {
+        url = s3.getSignedUrl("putObject", putParams)
+        callback(null, {
+          statusCode: 200,
+          headers: {
+            "Access-Control-Allow-Origin": HOME,
+          },
+          body: JSON.stringify({ url, signature })
+        })
+      }
     })
-    const params = JSON.parse(event.body)
-    let url = false
-    let signature = false
-    if (params) {
-      const putParams = {
-        Bucket: BUCKET_NAME,
-        Key: (signature + "/" + params.name),
-        ContentType: params.type,
-        ACL: "public-read"
+  }
+  else {
+    let err = true
+    return callback(err)
+  }
+}
+
+module.exports.delete = (event, context, callback) => {
+  const params = JSON.parse(event.body)
+  if (params) {
+    let signature = params.signature
+    let filename = params.filename
+    s3Delete(filename, signature, (err) => {
+      if (err) {
+        return callback(err)
       }
-      signature = getRandomID().toString()
-      let iotPayload = {
-        filename: params.name,
-        type: params.type,
-        signature: signature
+      else {
+        let iotPayload = { filename, signature }
+        iotPayload.delete = true
+        atsPublish(iotPayload, (err) => {
+          if (err) {
+            return callback(err)
+          }
+          else {
+            callback(null, {
+              statusCode: 200,
+              headers: {
+                "Access-Control-Allow-Origin": HOME,
+              },
+              body: JSON.stringify({ filename, signature })
+            })
+          }
+        })
       }
-      let iotParams = {
-        topic: TOPIC,
-        payload: JSON.stringify(iotPayload),
-        qos: 0
-      }
-      iotdata.publish(iotParams, (err, data) => {
-        if (err) {
-          return callback(err)
-        }
-        else {
-          url = s3.getSignedUrl("putObject", putParams)
-          callback(null, {
-            statusCode: 200,
-            headers: {
-              "Access-Control-Allow-Origin": HOME,
-            },
-            body: JSON.stringify({url,signature})
-          })
-        }
-      })
-    }
-    else {
-      let err = {}
-      return callback(err)
-    }
-  })
+    })
+  }
+  else {
+    let err = true
+    return callback(err)
+  }
 }
