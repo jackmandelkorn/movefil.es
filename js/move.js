@@ -34,23 +34,25 @@ MOVE.crosscheck = () => {
   }
 }
 
-MOVE.delete = (filename) => {
-  for (let key in MOVE.files) {
-    if (MOVE.files[key].filename === filename && MOVE.files[key].owned === true) {
-      fetch(MOVE.API_PATH + "/index/delete", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          filename,
-          signature: MOVE.files[key].signature
-        })
-      }).then((res) => {
-        MOVE.crosscheck()
-      })
+MOVE.delete = (input) => {
+  let filename = input.filename
+  let signature = (input.signature || false)
+  if (!signature) {
+    for (let key in MOVE.files) {
+      if (MOVE.files[key].filename === filename && MOVE.files[key].owned === true) {
+        signature = MOVE.files[key].signature
+      }
     }
   }
+  fetch(MOVE.API_PATH + "/index/delete", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ filename, signature })
+  }).then((res) => {
+    MOVE.crosscheck()
+  })
 }
 
 MOVE.drop = (e) => {
