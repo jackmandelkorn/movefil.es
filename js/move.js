@@ -68,9 +68,10 @@ MOVE.get = (input) => {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({ filename, signature })
-  }).then((res) => {
+  }).then(r => r.json()).then((json) => {
+    let body = json.data
     //FIXME: Testing
-    console.log(res)
+    console.log(body)
   })
 }
 

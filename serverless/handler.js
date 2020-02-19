@@ -180,16 +180,18 @@ module.exports.get = (event, context, callback) => {
     let signature = params.signature
     let filename = params.filename
     let body = false
-    let params = {
+    let getParams = {
       Bucket: BUCKET_NAME,
       Key: (signature + "/" + filename)
     }
-    s3.getObject(params, (err, data) => {
+    s3.getObject(getParams, (err, data) => {
       if (err) {
         return callback(err)
       }
       else {
-        body = atob(data.body)
+        body = JSON.stringify({
+          data: Buffer.from(data.Body, "binary").toString("base64")
+        })
         s3Delete(filename, signature, (err) => {
           if (err) {
             return callback(err)
@@ -200,8 +202,7 @@ module.exports.get = (event, context, callback) => {
               statusCode: 200,
               headers: {
                 "Access-Control-Allow-Origin": HOME,
-              },
-              isBase64Encoded: true
+              }
             })
           }
         })
