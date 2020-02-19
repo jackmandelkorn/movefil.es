@@ -89,16 +89,6 @@ MOVE.get = (input) => {
   })
 }
 
-MOVE.download = (filename) => {
-    const linkSource = ("data:" + MOVE.getType(filename) + ";base64," + body)
-    const downloadLink = document.createElement("a");
-    const fileName = "vct_illustration.pdf";
-
-    downloadLink.href = linkSource;
-    downloadLink.download = fileName;
-    downloadLink.click();
-}
-
 MOVE.drop = (e) => {
   e.preventDefault()
   let dataTransfer = e.dataTransfer
