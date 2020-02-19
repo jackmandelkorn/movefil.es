@@ -19,8 +19,8 @@ MOVE.handleDelete = (input) => {
   if (input.filename && input.signature) {
     for (let key in MOVE.files) {
       if (MOVE.files[key].filename === input.filename && MOVE.files[key].signature === input.signature) {
-        MOVE.files.splice(key, 1)
         MOVE.ui.onDelete(MOVE.files[key].signature)
+        MOVE.files.splice(key, 1)
       }
     }
     MOVE.crosscheck()
