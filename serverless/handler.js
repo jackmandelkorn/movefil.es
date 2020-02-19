@@ -55,7 +55,19 @@ const s3Delete = (filename, signature, callback) => {
       return callback(err)
     }
     else {
-      callback(null)
+      let iotPayload = {
+        filename,
+        signature,
+        delete: true
+      }
+      atsPublish(iotPayload, (err) => {
+        if (err) {
+          return callback(err)
+        }
+        else {
+          callback(null)
+        }
+      })
     }
   })
 }
@@ -146,19 +158,50 @@ module.exports.delete = (event, context, callback) => {
         return callback(err)
       }
       else {
-        let iotPayload = { filename, signature }
-        iotPayload.delete = true
-        atsPublish(iotPayload, (err) => {
+        callback(null, {
+          statusCode: 200,
+          headers: {
+            "Access-Control-Allow-Origin": HOME,
+          },
+          body: JSON.stringify({ filename, signature })
+        })
+      }
+    })
+  }
+  else {
+    let err = true
+    return callback(err)
+  }
+}
+
+module.exports.get = (event, context, callback) => {
+  const params = JSON.parse(event.body)
+  if (params) {
+    let signature = params.signature
+    let filename = params.filename
+    let body = false
+    let params = {
+      Bucket: BUCKET_NAME,
+      Key: (signature + "/" + filename)
+    }
+    s3.getObject(params, (err, data) => {
+      if (err) {
+        return callback(err)
+      }
+      else {
+        body = atob(data.body)
+        s3Delete(filename, signature, (err) => {
           if (err) {
             return callback(err)
           }
           else {
             callback(null, {
+              body,
               statusCode: 200,
               headers: {
                 "Access-Control-Allow-Origin": HOME,
               },
-              body: JSON.stringify({ filename, signature })
+              isBase64Encoded: true
             })
           }
         })

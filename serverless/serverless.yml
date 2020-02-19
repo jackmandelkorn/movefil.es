@@ -34,6 +34,13 @@ functions:
           path: index/delete
           method: any
           cors: true
+  get:
+    handler: handler.get
+    events:
+      - http:
+          path: index/get
+          method: any
+          cors: true
   auth:
     handler: handler.auth
     events:

@@ -34,16 +34,20 @@ MOVE.crosscheck = () => {
   }
 }
 
-MOVE.delete = (input) => {
-  let filename = input.filename
-  let signature = (input.signature || false)
-  if (!signature) {
-    for (let key in MOVE.files) {
-      if (MOVE.files[key].filename === filename) {
-        signature = MOVE.files[key].signature
-      }
+MOVE.getSignature = (filename) => {
+  let signature = false
+  for (let key in MOVE.files) {
+    if (MOVE.files[key].filename === filename) {
+      signature = MOVE.files[key].signature
+      break;
     }
   }
+  return signature
+}
+
+MOVE.delete = (input) => {
+  let filename = input.filename
+  let signature = (input.signature || MOVE.getSignature(filename))
   fetch(MOVE.API_PATH + "/index/delete", {
     method: "POST",
     headers: {
@@ -52,6 +56,21 @@ MOVE.delete = (input) => {
     body: JSON.stringify({ filename, signature })
   }).then((res) => {
     MOVE.crosscheck()
+  })
+}
+
+MOVE.get = (input) => {
+  let filename = input.filename
+  let signature = (input.signature || MOVE.getSignature(filename))
+  fetch(MOVE.API_PATH + "/index/get", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ filename, signature })
+  }).then((res) => {
+    //FIXME: Testing
+    console.log(res)
   })
 }
 
