@@ -112,19 +112,11 @@ MOVE.dropPositions = (files, e) => {
   const SPACING_Y = (((MOVE.ICON_SIZE * (1 + BUFFER)) / window.innerHeight) * 100).toFixed(DECIMALS)
   const MAX_X = 100 - SPACING_X
   const MAX_Y = ((100 - SPACING_Y) - ((MOVE.HEADER_SIZE / window.innerHeight) * 100)).toFixed(DECIMALS)
-  const x = ((e.x / window.innerWidth) * 100).toFixed(DECIMALS)
-  const y = Math.min(((e.y / window.innerHeight) * 100), MAX_Y).toFixed(DECIMALS)
-  let flip = false
-  if ((y + (Math.floor(((files.length - 1) * SPACING_X) / (MAX_X - x)) * SPACING_Y).toFixed(DECIMALS)) >= MAX_Y) {
-    flip = true
-  }
+  const x = Math.min(((e.x / window.innerWidth) * 100).toFixed(DECIMALS), MAX_X)
+  const y = Math.min(((Math.max(e.y, MOVE.HEADER_SIZE) / window.innerHeight) * 100).toFixed(DECIMALS), MAX_Y)
   for (let i = 0; i < files.length; i++) {
-    files[i].x = (x + ((i * SPACING_X) % (MAX_X - x)).toFixed(DECIMALS))
-    let addY = (Math.floor((i * SPACING_X) / (MAX_X - x)) * SPACING_Y).toFixed(DECIMALS)
-    if (flip) {
-      addY *= (-1)
-    }
-    files[i].y = (y + addY)
+    files[i].x = x + (SPACING_X * i)
+    files[i].y = y + (SPACING_Y * i)
   }
   return files
 }
