@@ -83,8 +83,10 @@ MOVE.get = (input) => {
     body: JSON.stringify({ filename, signature })
   }).then(r => r.json()).then((json) => {
     const body = json.data
-    const source = ("data:" + MOVE.getType(filename) + ";base64," + body)
+    const type = MOVE.getType(filename)
+    const source = ("data:" + type + ";base64," + body)
     fetch(source).then(r => r.blob()).then((blob) => {
+      blob.type = type
       MOVE.save(blob, filename)
     })
   })
