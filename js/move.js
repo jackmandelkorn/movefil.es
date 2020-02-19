@@ -39,7 +39,7 @@ MOVE.delete = (input) => {
   let signature = (input.signature || false)
   if (!signature) {
     for (let key in MOVE.files) {
-      if (MOVE.files[key].filename === filename && MOVE.files[key].owned === true) {
+      if (MOVE.files[key].filename === filename) {
         signature = MOVE.files[key].signature
       }
     }
