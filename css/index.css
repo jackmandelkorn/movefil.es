@@ -23,6 +23,8 @@ body {
   position: fixed;
   box-sizing: border-box;
   width: 64px;
+  cursor: pointer;
+  z-index: 2;
 }
 
 .file-container > .file-icon {
