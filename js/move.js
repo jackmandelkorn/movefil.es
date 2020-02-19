@@ -107,9 +107,9 @@ MOVE.dropCancel = (e) => {
 
 MOVE.dropPositions = (files, e) => {
   const BUFFER = 0.5
+  const DECIMALS = 3
   const SPACING_X = (((MOVE.ICON_SIZE * (1 + BUFFER)) / window.innerWidth) * 100).toFixed(DECIMALS)
   const SPACING_Y = (((MOVE.ICON_SIZE * (1 + BUFFER)) / window.innerHeight) * 100).toFixed(DECIMALS)
-  const DECIMALS = 3
   const MAX_X = 100 - SPACING_X
   const MAX_Y = ((100 - SPACING_Y) - ((MOVE.HEADER_SIZE / window.innerHeight) * 100)).toFixed(DECIMALS)
   const x = ((e.x / window.innerWidth) * 100).toFixed(DECIMALS)
