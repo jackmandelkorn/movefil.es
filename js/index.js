@@ -1,12 +1,35 @@
 /* Onload  Script */
 
+const ROOT = document.getElementById("root")
+
 MOVE.ui = {
   onCreate: (filename, type, x, y) => {
-    //TODO: Implement
+    let icon = document.createElement("img")
+    icon.className = "file-icon"
+    icon.src = ("assets/icons/mime/" + getFileIcon(type) + ".png")
+    let text = document.createElement("p")
+    text.className = "file-name"
+    text.innerHTML = filename
+    let container = document.createElement("div")
+    container.className = "file-container"
+    container.id = ("file-" + MOVE.getSignature(filename))
+    container.appendChild(icon)
+    container.appendChild(text)
+    container.onclick = () => {
+      MOVE.get({ filename })
+    }
+    ROOT.appendChild(container)
   },
   onDelete: (signature) => {
-    //TODO: Implement
+    try {
+      document.getElementById("file-" + signature).remove()
+    }
+    catch (e) {}
   }
+}
+
+const getFileIcon = (type) => {
+  return "default"
 }
 
 MOVE.dropElement = document.getElementsByClassName("drop-element")[0]
