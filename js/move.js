@@ -93,18 +93,27 @@ MOVE.get = (input) => {
 }
 
 MOVE.drop = (e) => {
-  const ICON_SIZE = 64
   e.preventDefault()
   let dataTransfer = e.dataTransfer
-  const x = e.x
-  const y = e.y
+  let files = dropPositions(dataTransfer.files, e)
+  MOVE.upload(files)
+  return false
+}
+
+MOVE.dropCancel = (e) => {
+  e.preventDefault()
+  return false
+}
+
+MOVE.dropPositions = (files, e) => {
   const BUFFER = 0.5
-  const SPACING_X = (((ICON_SIZE * (1 + BUFFER)) / window.innerWidth) * 100).toFixed(DECIMALS)
-  const SPACING_Y = (((ICON_SIZE * (1 + BUFFER)) / window.innerHeight) * 100).toFixed(DECIMALS)
+  const SPACING_X = (((MOVE.ICON_SIZE * (1 + BUFFER)) / window.innerWidth) * 100).toFixed(DECIMALS)
+  const SPACING_Y = (((MOVE.ICON_SIZE * (1 + BUFFER)) / window.innerHeight) * 100).toFixed(DECIMALS)
   const DECIMALS = 3
   const MAX_X = 100 - SPACING_X
-  const MAX_Y = 100 - SPACING_Y
-  let files = dataTransfer.files
+  const MAX_Y = ((100 - SPACING_Y) - ((MOVE.HEADER_SIZE / window.innerHeight) * 100)).toFixed(DECIMALS)
+  const x = ((e.x / window.innerWidth) * 100).toFixed(DECIMALS)
+  const y = Math.min(((e.y / window.innerHeight) * 100), MAX_Y).toFixed(DECIMALS)
   let flip = false
   if ((y + (Math.floor(((files.length - 1) * SPACING_X) / (MAX_X - x)) * SPACING_Y).toFixed(DECIMALS)) >= MAX_Y) {
     flip = true
@@ -117,13 +126,7 @@ MOVE.drop = (e) => {
     }
     files[i].y = (y + addY)
   }
-  MOVE.upload(files)
-  return false
-}
-
-MOVE.dropCancel = (e) => {
-  e.preventDefault()
-  return false
+  return files
 }
 
 MOVE.upload = (files) => {
