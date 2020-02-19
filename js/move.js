@@ -84,11 +84,11 @@ MOVE.get = (input) => {
   }).then(r => r.json()).then((json) => {
     const body = json.data
     const source = ("data:" + MOVE.getType(filename) + ";base64," + body)
-    const link = document.createElement("a")
-    link.href = source
-    link.download = filename
-    link.click()
-    MOVE.crosscheck()
+    fetch(source).then(r => r.blob()).then((blob) => {
+      const url = URL.createObjectURL(blob)
+      window.location = url
+      MOVE.crosscheck()
+    })
   })
 }
 
