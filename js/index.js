@@ -16,7 +16,7 @@ MOVE.ui = {
     container.appendChild(icon)
     container.appendChild(text)
     container.style.left = (x.toString() + "vw")
-    container.style.top = ("calc(" + MOVE.HEADER_SIZE + "px + " y.toString() + "vh)")
+    container.style.top = ("calc(" + MOVE.HEADER_SIZE + "px + " + y.toString() + "vh)")
     container.onclick = () => {
       MOVE.get({ filename })
     }
