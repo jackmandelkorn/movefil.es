@@ -12,7 +12,7 @@ const MOVE = {
   API_PATH: ("https://" + INIT_ENV.path + "/" + INIT_ENV.stage),
   API_STAGE: INIT_ENV.stage.toUpperCase(),
   MAINLINE: INIT_ENV.mainline,
-  ICON_SIZE: INIT_ENV.iconsize,
+  ICON_SIZE: INIT_ENV.iconSize,
   HEADER_SIZE: INIT_ENV.headerSize,
   ui: {
     onCreate: (filename, type, x, y) => {},
