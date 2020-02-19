@@ -45,6 +45,17 @@ MOVE.getSignature = (filename) => {
   return signature
 }
 
+MOVE.getType = (filename) => {
+  let type = "text/plain"
+  for (let key in MOVE.files) {
+    if (MOVE.files[key].filename === filename) {
+      type = MOVE.files[key].type
+      break;
+    }
+  }
+  return type
+}
+
 MOVE.delete = (input) => {
   let filename = input.filename
   let signature = (input.signature || MOVE.getSignature(filename))
@@ -69,10 +80,23 @@ MOVE.get = (input) => {
     },
     body: JSON.stringify({ filename, signature })
   }).then(r => r.json()).then((json) => {
-    let body = json.data
-    //FIXME: Testing
-    console.log(body)
+    const body = json.data
+    const source = ("data:" + MOVE.getType(filename) + ";base64," + body)
+    const link = document.createElement("a")
+    link.href = source
+    link.download = filename
+    link.click()
   })
+}
+
+MOVE.download = (filename) => {
+    const linkSource = ("data:" + MOVE.getType(filename) + ";base64," + body)
+    const downloadLink = document.createElement("a");
+    const fileName = "vct_illustration.pdf";
+
+    downloadLink.href = linkSource;
+    downloadLink.download = fileName;
+    downloadLink.click();
 }
 
 MOVE.drop = (e) => {
