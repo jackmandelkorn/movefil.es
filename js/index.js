@@ -4,14 +4,17 @@ const ROOT = document.getElementById("root")
 
 MOVE.ui = {
   onCreate: (filename, type, x, y) => {
-    let icon = document.createElement("img")
+    let extension = ((filename.split(".").slice(-1)[0] || "").trim().toLowerCase())
+    let icon = document.createElement("div")
     icon.className = "file-icon"
-    icon.src = ("assets/icons/mime/" + getFileIcon(type) + ".png")
+    icon.style.backgroundImage = ("url(\"assets/icons/mime/" + getFileIcon(type) + ".svg\")")
+    icon.style.fontSize = ((23 - (2.4 * extension.length)).toString() + "px")
+    icon.innerHTML = extension
     let text = document.createElement("p")
     text.className = "file-name"
     text.innerHTML = filename
     let container = document.createElement("div")
-    container.className = "file-container preload"
+    container.className = "file-container"
     container.id = ("file-" + MOVE.getSignature(filename))
     container.appendChild(icon)
     container.appendChild(text)
@@ -21,9 +24,6 @@ MOVE.ui = {
       MOVE.get({ filename })
     }
     ROOT.appendChild(container)
-    setTimeout(() => {
-      container.className = "file-container"
-    })
   },
   onDelete: (signature) => {
     try {
@@ -34,7 +34,7 @@ MOVE.ui = {
 }
 
 const getFileIcon = (type) => {
-  return "default"
+  return "file-red"
 }
 
 MOVE.dropElement = document.getElementsByClassName("drop-element")[0]
