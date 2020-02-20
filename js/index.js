@@ -47,7 +47,7 @@ MOVE.ui = {
       document.getElementById("file-" + signature).remove()
     }
     catch (e) {}
-    if (MOVE.files.length === 0) {
+    if (MOVE.files.length === 1) {
       PLUS.className = ""
     }
   }
