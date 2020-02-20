@@ -11,7 +11,7 @@ MOVE.ui = {
     text.className = "file-name"
     text.innerHTML = filename
     let container = document.createElement("div")
-    container.className = "file-container"
+    container.className = "file-container preload"
     container.id = ("file-" + MOVE.getSignature(filename))
     container.appendChild(icon)
     container.appendChild(text)
@@ -21,6 +21,9 @@ MOVE.ui = {
       MOVE.get({ filename })
     }
     ROOT.appendChild(container)
+    setTimeout(() => {
+      container.className = "file-container"
+    })
   },
   onDelete: (signature) => {
     try {
@@ -39,3 +42,8 @@ MOVE.dropElement = document.getElementsByClassName("drop-element")[0]
 MOVE.dropElement.addEventListener("dragenter", MOVE.dropCancel)
 MOVE.dropElement.addEventListener("dragover", MOVE.dropCancel)
 MOVE.dropElement.addEventListener("drop", MOVE.drop)
+
+//FIXME: Testing
+for (let i = 0; i < 5; i++) {
+  MOVE.ui.onCreate("test.txt", "text/plain", (Math.random() * 85).toFixed(3), (Math.random() * (85 - ((128 / window.innerHeight) * 100))).toFixed(3))
+}
