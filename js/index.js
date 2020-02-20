@@ -3,6 +3,7 @@
 const ROOT = document.getElementById("root")
 const UPLOADER = document.getElementById("uploader")
 const DROP_SCREEN = document.getElementById("drop-screen")
+const PLUS = document.getElementById("plus")
 
 MOVE.ui = {
   onCreate: (filename, type, x, y) => {
@@ -38,6 +39,7 @@ MOVE.ui = {
         MOVE.get({ filename })
       }
     }
+    PLUS.className = "items"
     ROOT.appendChild(container)
   },
   onDelete: (signature) => {
@@ -45,6 +47,9 @@ MOVE.ui = {
       document.getElementById("file-" + signature).remove()
     }
     catch (e) {}
+    if (MOVE.files.length === 0) {
+      PLUS.className = ""
+    }
   }
 }
 

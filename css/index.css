@@ -78,6 +78,29 @@ body {
   display: none;
 }
 
+#plus {
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  font-weight: 300;
+  font-size: 448px;
+  line-height: 100vh;
+  color: rgba(0,0,0,0.08);
+  text-align: center;
+  vertical-align: middle;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 1;
+  transition: opacity linear 0.15s;
+}
+#plus::before {
+  content: "+";
+}
+#plus.items {
+  opacity: 0;
+}
+
 .file-container {
   position: absolute;
   box-sizing: border-box;
@@ -153,5 +176,8 @@ body {
     max-width: 100vw;
     left: 0px;
     text-align: center;
+  }
+  #plus {
+    font-size: 224px;
   }
 }
