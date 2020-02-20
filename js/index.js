@@ -34,7 +34,7 @@ MOVE.ui = {
 }
 
 const getFileIcon = (type) => {
-  return "file-red"
+  return "default"
 }
 
 MOVE.dropElement = document.getElementsByClassName("drop-element")[0]
