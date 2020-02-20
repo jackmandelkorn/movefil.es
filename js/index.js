@@ -1,6 +1,8 @@
 /* Onload  Script */
 
 const ROOT = document.getElementById("root")
+const UPLOADER = document.getElementById("uploader")
+const DROP_SCREEN = document.getElementById("drop-screen")
 
 MOVE.ui = {
   onCreate: (filename, type, x, y) => {
@@ -20,8 +22,20 @@ MOVE.ui = {
     container.appendChild(text)
     container.style.left = (x.toString() + "vw")
     container.style.top = ("calc(" + MOVE.HEADER_SIZE + "px + " + y.toString() + "vh)")
+    let owned = false
+    for (let key in MOVE.files) {
+      if (MOVE.files[key].filename === filename) {
+        owned = MOVE.files[key].owned
+        break;
+      }
+    }
     container.onclick = () => {
-      MOVE.get({ filename })
+      if (owned) {
+        MOVE.delete({ filename })
+      }
+      else {
+        MOVE.get({ filename })
+      }
     }
     ROOT.appendChild(container)
   },
@@ -37,8 +51,24 @@ const getFileIcon = (type) => {
   return "default"
 }
 
-MOVE.dropElement = document.getElementsByClassName("drop-element")[0]
-
+MOVE.dropElement = DROP_SCREEN
 MOVE.dropElement.addEventListener("dragenter", MOVE.dropCancel)
 MOVE.dropElement.addEventListener("dragover", MOVE.dropCancel)
 MOVE.dropElement.addEventListener("drop", MOVE.drop)
+
+let uploadEvent = null
+const uploadHandler = (e) => {
+  let files = UPLOADER.files
+  if (files.length) {
+    files = MOVE.filePositions(files, uploadEvent)
+    MOVE.upload(files)
+  }
+  uploadEvent = null
+  UPLOADER.removeEventListener("change", uploadHandler)
+}
+
+MOVE.dropElement.addEventListener("click", (e) => {
+  UPLOADER.click()
+  uploadEvent = e
+  UPLOADER.addEventListener("change", uploadHandler)
+})

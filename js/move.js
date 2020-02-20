@@ -95,7 +95,7 @@ MOVE.get = (input) => {
 MOVE.drop = (e) => {
   e.preventDefault()
   let dataTransfer = e.dataTransfer
-  let files = MOVE.dropPositions(dataTransfer.files, e)
+  let files = MOVE.filePositions(dataTransfer.files, e)
   MOVE.upload(files)
   return false
 }
@@ -105,7 +105,7 @@ MOVE.dropCancel = (e) => {
   return false
 }
 
-MOVE.dropPositions = (files, e) => {
+MOVE.filePositions = (files, e) => {
   const BUFFER = 0.5
   const DECIMALS = 3
   const SPACING_X = (((MOVE.ICON_SIZE * (1 + BUFFER)) / window.innerWidth) * 100).toFixed(DECIMALS)
